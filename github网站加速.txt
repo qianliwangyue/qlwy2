@@ -1,0 +1,46 @@
+# wget下载
+wget https://github.com/dotnetcore/FastGithub/releases/download/2.1.4/fastgithub_linux-x64.zip
+# 解压
+unzip fastgithub_linux-x64.zip
+# 运行
+cd fastgithub_linux-x64
+./fastgithub start
+
+
+注意：我访问github下载了fastgithub然后配置了firefox浏览器的代理：记得下载插件“腾讯翻译”
+
+# 添加代理
+第一种：添加firefox浏览器代理
+Firefox浏览器
+如果Firefox浏览器提示：未连接：有潜在的安全问题。
+
+//切换目录
+cd /opt/fastgithub_linux-x64
+
+//Firefox浏览器没有cacert目录的读权限，会导致导入证书失败，我们可以复制一份变相升级了权限。
+cp -r cacert cacert2
+Firefox浏览器->设置->隐私与安全->证书->查看证书->证书颁发机构，
+导入 /opt/fastgithub_linux-x64/cacert2 目录下 fastgithub.crt，
+勾选“信任由此证书颁发机构来标识网站”，最后确定即可。
+#################################################################################################################################
+
+
+第二种：添加电脑的网络代理
+vim /etc/profile
+#settings github
+export http_proxy="http://127.0.0.1:38457"
+export https_proxy="http://127.0.0.1:38457" 
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+只给firebox设置了网络代理，所以必须把firebox设置为默认应用，终端git push 才能访问到github.com
+设置了使用代理访问github.com，所以要设置git全局代理与其相同
+# 为 git 设置: http 代理
+git config --global http.proxy http://127.0.0.1:38457
+git config --global https.proxy https://127.0.0.1:38457
+
+# 取消代理
+git config --global --unset http.proxy 
+git config --global --unset https.proxy
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

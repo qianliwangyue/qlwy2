@@ -1,0 +1,227 @@
+
+####################################################################################################################################################
+免密登陆
+方法1:
+git remote add qlwy https://账户：密码@github.com/qianliwangyue/qlwy.git（https的仓库地址）
+方法2：
+cd ~/.ssh
+ssh-keygen -t rsa （生成公私密钥）
+打开id_rsa.pub，复制里面的key
+回到github上，设置，左边选择SSH Keys，Add SSH Key,title随便填，粘贴在你电脑上生成的key。
+git remote add qlwy git@github.com:qianliwangyue/qlwy.git（ssh的仓库地址）
+####################################################################################################################################################
+git init								到一个目录里，初始化仓库（即管理该文件夹）
+全局配置/位置：~/.gitconfig
+git config --global user.name "芊里望月"					设置作者名
+git config --global user.email "1374675587@qq.com"			设置作者油箱
+git config --global merge.tool bc4					设置合并冲突处理的工具（别名：bc4）
+git config --global mergetool.bc4.path '/usr/bin/bcompare'		软件工具地址
+git config --global mergetool.keepBackup false				处理的文件不作备份
+git config --global -l							查看git的全局配置信息
+
+系统配置/位置：/etc/.gitconfig	(需要root权限)
+git config --system ...
+单独项目文件仓库配置/位置：当前项目.git/config
+git config --local ...
+
+
+忽略某些文件不进行管理(可以github上搜索gitignore ==>github/gitignore ==>找到对应编程语言的忽略文件ctrl+c，v到本地.gitignore)
+vim  .gitignore（创建忽略控制文件）
+在.gitignore文件中写入要忽略的文件名
+eg:
+3.txt
+*.h(忽略所有.h结尾的文件)
+files/(忽略files文件夹下所有文件)
+!files/66.txt(file/66.txt不包括,即files文件夹下的66.txt任接受git管理)
+.gitignore(忽略控制文件本身也忽略掉)
+保存即可忽略的文件，git不会再进行识别
+
+
+github仓库上方
+Issues(话题讨论评论)
+Wiki（文档：项目描述，提示）
+
+
+
+echo "666" >> README.md							创建一个文件,写入“666”
+
+git status		（查看当前工作区）				检测当前文件夹下文件的状态（已经管理的文件（绿色），未管理的文件（红色））
+git checkout 文件名							取消对文件的修改（还未提交到暂存区时） 
+git checkout .								取消对所有文件的修改（还未提交到暂存区时）
+git checkout master							切换到分支 'master'
+
+
+
+git clone 仓库地址 本地文件名
+git clone -b 分支名  仓库地址 	注意：克隆某分支到本地目录，然后在该目录下push时，对应的就是push到远端的对应分支。
+
+git checkout -b dev							创建并切换到dev分支
+git branch								查看分支信息
+git branch 分支1（分支名）						创建分支1
+git branch -d 分支名							删除分支
+git checkout 分支1							切换到分支 '分支1'
+git checkout master//git merge 分支名					将分支名合并到当前位置(master)分支
+git push origin --delete branch						删除远程分支
+git branch --delete --remotes						删除追踪分支。
+
+git checkout master//git branch fixbug//git checkout fixbug//....曾删改文件修bug
+切换到主分支，新建修复bug分支，进入修复bug分支，修bug...修完后提交
+git checkout master//git merge fixbug//git branch -d fixbug
+切换到主分支，将fixbug合并到主分支,删除fixbug分支
+git checkout master//git merge 分支1//git branch -d 分支1
+
+
+
+
+
+git add README.md							添加要管理的文件名(提交到暂存区)
+git add .								添加管理所有文件(提交到暂存区)
+git reset HEAD 文件名							从暂存区撤回
+git reset HEAD .							从暂存区撤回所有文件
+
+git commit -m "1.0"							生成（已管理（暂存区）的文件）"提交文件的描述"（添加到版本库）
+git tag -a v1 -m "第一版"						生成版本号的标签(v1)和标签描述("第一版")
+git push qlwy master --tags
+git reset --soft 版本号							从版本库撤回暂存区
+
+
+
+git log	(退出不了的话，按'q')						查看版本库
+git log --graph								树状图显示log
+git log --graph --pretty=format:"%h %s"					格式化显示log（版本号  提交信息）
+
+
+切换到dev分支后 git merge master						将master分支合并到 dev（使dev分支成为最新最全的文件）
+
+git reset --hard  901856278cd8e7b4394208924b342a2b2615ce82(版本号)	将文件夹恢复（回滚）到某个版本
+git reset --mix (版本号)						将文件回滚到某个版本刚修改，还提交到暂存区时的状态				
+git reflog								查看因为回滚，导致消失的版本库
+git remote -v								查看提交的远程仓库信息
+git remote rm 远程仓库别名						删除提交的远程仓库
+git pull qlwy dev							将远程仓库qlwy的dev分支合并到当前本地仓库所在分支
+(以下操作等同于git pull qlwy dev
+git fetch qlwy dev							拉取远程仓库qlwy的dev分支的版本库
+git merge qlwy/dev							将远程仓库qlwy的dev分支的版本库合并到当前所在分支的工作区
+)
+git merge dev								dev分支合并到当前所在的本地仓库分支
+git pull ==git fetch + git merge(有分叉)
+git pull --rebase ==git fetch  + git rebase(无分叉)
+
+###用于未push前本地库提交信息合并
+git rebase -i bab9445a0b6629b6c86331be1d68e41cda1c9f60			
+将提交信息（从该版本号一直到最新版本）合并
+//将不需要的版本，前面的pick改为：s (（当前版本合并到上一个版本）注意最上面的不能改)
+/然后ctrl+x，enter,将几个提交信息该为一个,然后ctrl+x，y,enter
+
+git rebase -i HEADE~3							将近三条提交数据合并同上
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+git rebase 时如果有冲突
+（(本地冲突的文件内会有提醒,手动删改)
+git status（红）
+git add .
+git status（绿--提醒以下操作）
+手动解决后git rebase --continue）
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+
+
+
+(------------------------------------------------------------------------------------------------------------------
+git checkout dev//git rebase master//git checkout master//git merge dev
+(假设master和dev都写了代码并commit过，master的commit次数多于dev)合并提交（一条线）
+
+merge 和 rebase 的区别：
+
+1.merge 会多出一次 merge commit，rebase不会。
+
+2.merge 的提交树是非线性的，rebase 的提交树是线性的（通过重写提交历史）。
+)------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################################################################
+(如果在两个不同的本地仓库都提交了代码
+第二个提交时会git push 失败
+解决方法：执行  git pull qlwy2 dev --rebase，
+本地冲突的文件内会有提醒，
+----------------------------------------------
+来自 https://github.com/qianliwangyue/qlwy2
+ * branch            dev        -> FETCH_HEAD
+   1ac1ed6..d9f3e93  dev        -> origin/dev
+自动合并 22.txt
+冲突（内容）：合并冲突于 22.txt
+error: 不能应用 80866c9... 1.12
+
+----------------------------------------------
+打开22.txt
+eg：
+<<<<<<< HEAD
+888
+=======
+666
+>>>>>>> a775e64 (1.111)
+打开本地仓库文件手动修改合并两次提交内容，
+vim 22.txt修改
+git status（红）
+git add .
+git status（绿--提醒以下操作）
+git rebase --continue
+ctrl+X退出（成功变基并更新 refs/heads/dev）
+git status（您的分支领先 'origin/dev' 共 1 个提交。（使用 "git push" 来发布您的本地提交））
+git push origin dev （再重新提交即可)
+######################################################################################################################
+
+
+
+git remote add origin https://github.com/qianliwangyue/qlwy.git	
+origin是远程仓库https://github.com/qianliwangyue/qlwy.git的别名
+
+git push -u origin master 将本地的master分支提交到远程仓库
+//如果提交失败则可以先把github仓库下载并合并到本地仓库
+git pull --rebase https://github.com/qianliwangyue/qlwy.git
+
+
+git clone https://github.com/qianliwangyue/qlwy.git 文件名		将该仓库文件拷贝到本地文件
+
+
+
+多人协同开发
+1.可以在自己的github仓库邀请合作伙伴，赋予权限
+2.可以建立一个组织，在组织里建仓库，邀请member（成员）再分配权限
+组织成员可分配权限（组织setting-成员权限）
+仓库成员也可分配权限（仓库setting-成员权限）
+
+分支成员提交文件（合并到分支时设置提交审核）仓库setting-分支-rule（规则）-Require pull request review merging(成员push合并时要拉取merge请求来验证)
+（上一级github上有Pull request 点击进去处理成员的push请求，merge后再决定是否删除分支）
+
+开发流程：
+master(审核后合并到上一级/是否删除分支) ==> release([预发布版]审核后合并到上一级/是否删除分支) ==> dev(审核后合并到上一级/是否删除分支) ==>dev1.1 + dev1.2 +...
+
+
+开源项目贡献：
+1.进入开源项目仓库，点击fork （将源代码拷贝到自己的github仓库）
+2.将github仓库clone到本地修改后push回github
+3.给源代码作者提交 修复bug的申请（进入github仓库点击New pull request ==> Create pull request）
+如果原作者审核通过并发布，则该开源项目中有我写的代码。
+
+
+
+
+
+
+
+
+
+
