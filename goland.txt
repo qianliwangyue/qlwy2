@@ -1,0 +1,4 @@
+sudo ln -s /user/GoLand_2023.2.2/bin/goland.sh /usr/local/bin/goland
+
+#将goland软件的bin目录的sh启动文件，关联到/usr/local/bin/内，由于/usr/local/bin已经配置过全局变量，所以
+在任意终端输入goland即可运行
